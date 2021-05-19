@@ -44,141 +44,86 @@ class HomePage extends StatelessWidget {
     //   child: _card(context, paciente),
     // );
     return Dismissible(
-      key: UniqueKey(),
-      background: Container(
-        color: Colors.red,
-      ),
-      onDismissed: (direccion) {
-        pacientesProvider.borrarPaciente(paciente.id);
-      },
-      child: _card(context, paciente),
-    );
-  }
-
-  Widget _card(BuildContext context, PacienteModel paciente) {
-    return Card(
-      elevation: 10.0,
-      margin: EdgeInsets.only(top: 20.0, left: 10, right: 10, bottom: 5.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 15, bottom: 15),
-            alignment: Alignment.topCenter,
-            child: Text('${paciente.name}',
-                style: TextStyle(fontSize: 25, color: Colors.black),
-                textAlign: TextAlign.center),
-          ),
-          Row(
+        key: UniqueKey(),
+        onDismissed: (direction) {
+          print('DISMISED');
+          if (direction == DismissDirection.endToStart) {
+            print('END TO START');
+            pacientesProvider.borrarPaciente(paciente.id);
+          } else {
+            print('START TO END');
+          }
+        },
+        confirmDismiss: (direction) {
+          if(direction==DismissDirection.endToStart){
+                  return showDialog(
+              context: context,
+              builder: (context) {
+                
+                return AlertDialog(
+                  title: Text('Confirmar'),
+                  content: Text('Estás seguro de eliminarlo?'),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {
+                          print('No');
+                          Navigator.of(context).pop(false);
+                        },
+                        child: Text('No')),
+                    FlatButton(
+                        onPressed: () {
+                          print('Si');
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Text('Si')),
+                  ],
+                );
+              });
+            }
+          
+        },
+        // direction: DismissDirection.endToStart,
+        secondaryBackground: Container(
+          color: Colors.red,
+          child: Icon(Icons.delete, color: Colors.white, size: 30.0),
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.only(right: 10),
+        ),
+        background: Container(
+          color: Colors.amber,
+          child: Icon(Icons.book, color: Colors.white, size: 30.0),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 10),
+        ),
+        // onDismissed: (direccion) {
+        //   pacientesProvider.borrarPaciente(paciente.id);
+        // },
+        child: Card(
+          child: Column(
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: (paciente.fotoUrl == null)
+              ListTile(
+                // leading: Icon(Icons.account_circle, size: 60.0,),
+                leading: (paciente.fotoUrl == null)
                     ? CircleAvatar(
                         backgroundImage: AssetImage('assets/no-image.png'),
-                        radius: 45.0,
+                        //radius: 20,
                       )
                     // ? Image(image: AssetImage('assets/no-image.png'))
                     : CircleAvatar(
                         backgroundColor: Colors.black26,
                         backgroundImage: NetworkImage(paciente.fotoUrl),
-                        radius: 45.0,
+                        //radius: 20,
                       ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 3),
-                      child: Text('${paciente.lastname}',
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400))),
-                  Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 3),
-                      child: Text('${paciente.carnet}',
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400))),
-                  // SizedBox(height: 10),
-                  Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 3),
-                      // alignment: Alignment.centerLeft,
-                      child: Text('${paciente.number}',
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400))),
-                  // SizedBox(height: 10),
-                  Container(
-                      padding: EdgeInsets.only(
-                        left: 15,
-                      ),
-                      alignment: Alignment.bottomRight,
-                      child: Text('${paciente.direccion}',
-                          style: TextStyle(fontSize: 15, color: Colors.grey))),
-                ],
+                title: Text('${paciente.name}' + " " + '${paciente.lastname}'),
+                subtitle: Text(paciente.number.toString()),
+                onTap: () => Navigator.pushNamed(context, 'paciente',
+                    arguments: paciente),
+                // .then((value) => setState(() {})),
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlatButton(
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.blue,
-                ),
-
-                //Text('Editar'),
-                onPressed: () => Navigator.pushNamed(context, 'paciente',
-                    arguments: paciente),
-              ),
-              // FlatButton(
-              //   child: Icon(
-              //     Icons.note,
-              //     color: Colors.amber,
-              //   ),
-
-              //   // Text('Editar'),
-              //   onPressed: null,
-              // ),
-              // FlatButton(
-              //   child: Icon(
-              //     Icons.delete,
-              //     color: Colors.red,
-              //   ),
-              //   onPressed: () => _dialogo,
-                // Text('Editar'),
-                // onPressed: () => ( pacientesProvider.borrarPaciente(paciente.id)),
-              // )
-            ],
-          )
-        ],
-      ),
-    );
+        ));
   }
-
-  // void _dialogo(BuildContext context, PacienteModel paciente) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-  //           title: Text('Alerta'),
-  //           content: Text('¿Estas seguro de eliminar el paciente?'),
-  //           actions: <Widget>[
-  //             FlatButton(child: Text('Cancelar'),onPressed: () => Navigator.of(context).pop()),
-  //             FlatButton(onPressed: null, child: Text('OK'))
-  //           ],
-  //         );
-  //       });
-  // }
 
   _crearBoton(BuildContext context) {
     return FloatingActionButton(

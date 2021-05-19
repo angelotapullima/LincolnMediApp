@@ -24,7 +24,7 @@ class _CitasPageState extends State<CitasPage> {
           DatePicker(
             DateTime.now(),
             initialSelectedDate: DateTime.now(),
-            selectionColor: Colors.teal,
+            selectionColor: Colors.black,
             selectedTextColor: Colors.white,
             onDateChange: (date) {
               // New date selected
@@ -54,8 +54,8 @@ class _CitasPageState extends State<CitasPage> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                               color: ('${snapshot.data[index].estado}' == '1')
-                                  ? Colors.red
-                                  : Colors.green),
+                                  ? Colors.teal
+                                  : Colors.black38),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
