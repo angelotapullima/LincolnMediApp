@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/models/citas_model.dart';
-import 'package:form_validation/src/utils/responsive.dart';
+import 'package:form_validation/src/pages/registro_cita.dart';
 
 class CitasPage extends StatefulWidget {
   @override
@@ -11,12 +11,21 @@ class CitasPage extends StatefulWidget {
 }
 
 class _CitasPageState extends State<CitasPage> {
+  DateTime today;
+  String fecha;
+  @override
+  void initState() {
+    today = toDateMonthYear(DateTime.now());
+    fecha =
+        "${today.year.toString().padLeft(2, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final citasBloc = Provider.citas(context);
-    citasBloc.obtenerCitas();
+    citasBloc.obtenerCitas(fecha);
 
-    DateTime _selectedValue = DateTime.now();
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -26,12 +35,14 @@ class _CitasPageState extends State<CitasPage> {
             initialSelectedDate: DateTime.now(),
             selectionColor: Colors.black,
             selectedTextColor: Colors.white,
+            locale: 'es_ES',
             onDateChange: (date) {
+              fecha =
+                  "${date.year.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
               // New date selected
-              setState(() {
-                _selectedValue = date;
-              });
-              print(_selectedValue);
+              citasBloc.obtenerCitas(fecha);
+
+              print(fecha);
             },
           ),
           StreamBuilder(
@@ -44,37 +55,64 @@ class _CitasPageState extends State<CitasPage> {
                     child: ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          width: double.infinity,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                              color: ('${snapshot.data[index].estado}' == '1')
-                                  ? Colors.teal
-                                  : Colors.black38),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${snapshot.data[index].hora}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                              Text(
-                                '${snapshot.data[index].paciente}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                              Text(
-                                '${snapshot.data[index].medico}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                            ],
+                        return InkWell(
+                          onTap: () {
+                            if (snapshot.data[index].estado == '0') {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  transitionDuration:
+                                      const Duration(milliseconds: 500),
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return RegistroCita(
+                                      fecha: '${snapshot.data[index].fecha}',
+                                      hora: '${snapshot.data[index].hora}',
+                                    );
+                                  },
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 2),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            width: double.infinity,
+                            height: 100,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: ('${snapshot.data[index].estado}' == '1')
+                                    ? Colors.teal
+                                    : Colors.black38),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${snapshot.data[index].hora}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                                Text(
+                                  '${snapshot.data[index].paNombre}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                                Text(
+                                  '${snapshot.data[index].medico}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -93,5 +131,7 @@ class _CitasPageState extends State<CitasPage> {
     );
   }
 
-
+  DateTime toDateMonthYear(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  }
 }

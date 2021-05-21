@@ -73,7 +73,7 @@ class _PacientePageState extends State<PacientePage> {
       initialValue: paciente.carnet.toString(),
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(labelText: 'Dni'),
-      onSaved: (value) => paciente.carnet = int.parse(value),
+      onSaved: (value) => paciente.carnet = value,
       validator: (value) {
         if (utils.isNumeric(value)) {
           return null;
@@ -121,7 +121,7 @@ class _PacientePageState extends State<PacientePage> {
       initialValue: paciente.number.toString(),
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(labelText: 'Celular'),
-      onSaved: (value) => paciente.number = int.parse(value),
+      onSaved: (value) => paciente.number = value,
       validator: (value) {
         if (utils.isNumeric(value)) {
           return null;

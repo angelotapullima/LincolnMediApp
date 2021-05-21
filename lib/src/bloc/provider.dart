@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_validation/src/bloc/citas_bloc.dart';
 import 'package:form_validation/src/bloc/login_bloc.dart';
+import 'package:form_validation/src/bloc/pacientes_bloc.dart';
 export 'package:form_validation/src/bloc/login_bloc.dart';
 
 class Provider extends InheritedWidget {
@@ -15,6 +16,7 @@ class Provider extends InheritedWidget {
 
   final loginBloc = LoginBloc();
   final citasBloc = CitasBloc();
+  final pacientesBloc = PacientesBloc();
 
   Provider._internal({Key key, Widget child}) : super(key: key, child: child);
 
@@ -27,5 +29,9 @@ class Provider extends InheritedWidget {
 
   static CitasBloc citas(BuildContext context) {
     return (context.dependOnInheritedWidgetOfExactType<Provider>()).citasBloc;
+  }
+
+  static PacientesBloc paciente(BuildContext context) {
+    return (context.dependOnInheritedWidgetOfExactType<Provider>()).pacientesBloc;
   }
 }

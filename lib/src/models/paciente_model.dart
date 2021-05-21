@@ -20,21 +20,32 @@ class PacienteModel {
     });
 
     String id;
-    int carnet;
+    String carnet;
     String name;
     String lastname;
-    int number;
+    String number;
     String direccion;
     String fotoUrl;
 
     factory PacienteModel.fromJson(Map<String, dynamic> json) => PacienteModel(
         id: json["id"],
-        carnet: json["carnet"],
+        carnet: json["carnet"].toString(),
         name: json["name"],
         lastname: json["lastname"],
-        number: json["number"],
+        number: json["number"].toString(),
         direccion: json["direccion"],
         fotoUrl: json["fotoUrl"],
+    );
+
+
+     factory PacienteModel.fromJson2(Map<String, dynamic> json) => PacienteModel(
+        
+        carnet: json["dniPaciente"],
+        name: json["nombrePaciente"],
+        lastname: json["apellidoPaciente"],
+        number: json["telefono"],
+        direccion: json["direccion"],
+        fotoUrl: json["foto"],
     );
 
     Map<String, dynamic> toJson() => {

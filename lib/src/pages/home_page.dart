@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form_validation/src/bloc/pacientes_bloc.dart';
 import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/models/paciente_model.dart';
 import 'package:form_validation/src/providers/pacientes_provider.dart';
@@ -8,30 +9,39 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of(context);
+
+    final pacienteBloc = Provider.paciente(context);
+      pacienteBloc.obtenerPacientes();
 
     return Scaffold(
       // appBar: AppBar(
       //   title: Text('Pacientes'),
       //   centerTitle: true,
       // ),
-      body: _crearListado(),
+      body: _crearListado(pacienteBloc),
       floatingActionButton: _crearBoton(context),
     );
   }
 
-  Widget _crearListado() {
-    return FutureBuilder(
-      future: pacientesProvider.cargarPacientes(),
+  Widget _crearListado(PacientesBloc pacienteBloc) {
+    return StreamBuilder(
+      stream: pacienteBloc.pacienteStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<PacienteModel>> snapshot) {
         if (snapshot.hasData) {
-          final pacientes = snapshot.data;
+
+          if(snapshot.data.length>0){
+            final pacientes = snapshot.data;
 
           return ListView.builder(
             itemCount: pacientes.length,
             itemBuilder: (context, i) => _crearItem(context, pacientes[i]),
           );
+
+          }else{
+            return Center(child: Text('No hay Datos'),);
+          }
+          
         } else {
           return Center(child: CircularProgressIndicator());
         }
@@ -115,7 +125,7 @@ class HomePage extends StatelessWidget {
                         //radius: 20,
                       ),
                 title: Text('${paciente.name}' + " " + '${paciente.lastname}'),
-                subtitle: Text(paciente.number.toString()),
+                subtitle: Text(paciente.carnet),
                 onTap: () => Navigator.pushNamed(context, 'paciente',
                     arguments: paciente),
                 // .then((value) => setState(() {})),
