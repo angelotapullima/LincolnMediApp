@@ -9,6 +9,7 @@ class CitasModel {
   String paNombre;
   String papellido;
   String padni;
+  String haycita;
 
   CitasModel({
     this.idCita,
@@ -21,6 +22,7 @@ class CitasModel {
     this.paNombre,
     this.papellido,
     this.padni,
+    this.haycita,
   });
 
   factory CitasModel.fromJson(Map<String, dynamic> json) => CitasModel(

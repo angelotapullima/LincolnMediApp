@@ -44,16 +44,20 @@ class CitasBloc {
       } else {
         horaFinal = '$i:00 - $horaFin:00 am';
       }
+      var estoVale = '${i.toString().padLeft(2, '0')}:00:00';
+      print('$estoVale');
 
       if (citasfecha.length > 0) {
         for (var x = 0; x < citasfecha.length; x++) {
-          if (horaAperturaOficial == int.parse(citasfecha[x].hora)) {
+          var fechilla = citasfecha[x].hora;
+          if (estoVale == fechilla) {
             CitasModel citasModel = CitasModel();
 
+            citasModel.idCita =citasfecha[x].idCita;
             citasModel.hora = horaFinal;
             citasModel.fecha = fecha;
             citasModel.estado = citasfecha[x].estado;
-            citasModel.medico = 'ocupado';
+            citasModel.medico = (citasfecha[x].estado=='0')?'ocupado':'Atendido';
             citasModel.paNombre = citasfecha[x].paNombre;
             algo.add(citasModel);
           } else {
@@ -61,7 +65,7 @@ class CitasBloc {
 
             citasModel.hora = horaFinal;
             citasModel.fecha = fecha;
-            citasModel.estado = '0';
+            citasModel.estado = '9';
             citasModel.medico = 'Libre';
             citasModel.paNombre = '';
             algo.add(citasModel);
@@ -72,7 +76,7 @@ class CitasBloc {
 
         citasModel.hora = horaFinal;
         citasModel.fecha = fecha;
-        citasModel.estado = '0';
+        citasModel.estado = '9';
         citasModel.medico = 'Libre';
         citasModel.paNombre = '';
         algo.add(citasModel);

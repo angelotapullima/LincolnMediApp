@@ -132,6 +132,9 @@ class _RegistroCitaState extends State<RegistroCita> {
 
                     if (res) {
                       print('oks');
+                      final citasBloc = Provider.citas(context);
+                      citasBloc.obtenerCitas(widget.fecha);
+                      Navigator.pop(context);
                     } else {
                       print('hubo un error cita');
                     }

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/models/citas_model.dart';
+import 'package:form_validation/src/pages/atender_cita.dart';
 import 'package:form_validation/src/pages/registro_cita.dart';
 
 class CitasPage extends StatefulWidget {
@@ -57,7 +58,7 @@ class _CitasPageState extends State<CitasPage> {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            if (snapshot.data[index].estado == '0') {
+                            if (snapshot.data[index].estado == '9') {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
@@ -79,6 +80,31 @@ class _CitasPageState extends State<CitasPage> {
                                   },
                                 ),
                               );
+                            } else if (snapshot.data[index].estado == '0') {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  opaque: false,
+                                  transitionDuration:
+                                      const Duration(milliseconds: 500),
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return AtenderCita(
+                                      idCita: snapshot.data[index].idCita,
+                                      fecha: snapshot.data[index].fecha,
+                                    );
+                                  },
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+
+                              //atender cita
                             }
                           },
                           child: Container(
@@ -90,9 +116,11 @@ class _CitasPageState extends State<CitasPage> {
                             height: 100,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: ('${snapshot.data[index].estado}' == '1')
-                                    ? Colors.teal
-                                    : Colors.black38),
+                                color: ('${snapshot.data[index].estado}' == '9')
+                                    ? Colors.black38
+                                    : ('${snapshot.data[index].estado}' == '0')
+                                        ? Colors.teal
+                                        : Colors.red),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

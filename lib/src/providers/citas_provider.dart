@@ -9,7 +9,7 @@ class CitasProvider {
 
   Future<bool> listarCitasPorDia(String fecha) async {
     try {
-      final url = 'https://guabba.com/dental/api/cita/listar_citas_dia';
+      final url = 'https://guabba.com/dental/api/cita/listar_citas_dia_todo';
 
       final resp = await http.post(url, body: {
         'fecha': '$fecha',
@@ -47,7 +47,7 @@ class CitasProvider {
   Future<bool> registrarCita(
       String idaPaciente, String fecha, String hora) async {
     try {
-      final url = 'https://guabba.com/dental/api/cita/registrar_cita';
+      final url = 'https://guabba.com/dental/api/cita/registrar_cita_dni';
 
       final horaSinFormato = hora.split('-');
       final fechita = horaSinFormato[0].trim();
@@ -58,9 +58,36 @@ class CitasProvider {
       estoVale = '${estoVale.padLeft(2, '0')}:00:00';
 
       final resp = await http.post(url, body: {
-        'id_paciente': '$idaPaciente',
+        'dni': '$idaPaciente',
         'cita_fecha': '$fecha',
-        'cita_hora': '$fechita',
+        'cita_hora': '$estoVale',
+      });
+
+      final decodedData = json.decode(resp.body);
+
+      if (decodedData['result']['code'].toString() == '1') {
+        //Huevo estuvo aqui
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return false;
+    }
+  }
+
+
+  Future<bool> atenderCita(
+      String idCita) async {
+    try {
+      final url = 'https://guabba.com/dental/api/cita/atender_cita';
+
+    
+
+      final resp = await http.post(url, body: {
+        'id_cita': '$idCita',
+        'cita_comentarios': '', 
       });
 
       final decodedData = json.decode(resp.body);
